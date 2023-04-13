@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view
 
-from .models import Question, Answer
+from .models import Course, Question, Answer
 
 MASK = '''<question type="multichoice">
     <name>
@@ -126,3 +126,13 @@ def question_detail(request, pk):
         question = Question.objects.get(pk=pk)
     except Question.DoesNotExist:
         return JsonResponse({'message' : 'Question not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+def courses(request):
+    data = json.loads(request.body)
+
+    course = Course()
+    course.name = data["name"]
+    course.save()
+
+    return JsonResponse({"status" : "ok"})

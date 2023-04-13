@@ -1,24 +1,32 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Question } from 'src/app/models/question.model';
 import { Answer } from 'src/app/models/answer.model';
+import { Course } from 'src/app/models/course';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { QuestionsService } from 'src/app/services/questions.service';
+import { CoursesService } from 'src/app/services/courses.service';
 
 @Component({
   selector: 'app-add-question',
   templateUrl: './add-question.component.html',
   styleUrls: ['./add-question.component.css']
 })
-export class AddQuestionComponent {
+export class AddQuestionComponent implements OnInit {
 
   constructor(private snackBar : MatSnackBar,
-    private questionsService : QuestionsService) {}
+    private questionsService : QuestionsService,
+    private coursesService : CoursesService) { }
 
   question : Question = new Question();
   correctAnswer : Answer = new Answer();
   wrongAnswer1 : Answer = new Answer();
   wrongAnswer2 : Answer = new Answer();
   wrongAnswer3 : Answer = new Answer();
+  courses : Course[] = [];
+
+  ngOnInit() {
+    this.coursesService.getAll().subscribe(courses => this.courses = courses);
+  }
 
   save() : void {
     if (this.question == null || this.question.text == null) {

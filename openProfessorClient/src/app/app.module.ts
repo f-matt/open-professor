@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { AddQuestionComponent } from './components/add-question/add-question.component';
 import { QuestionDetailsComponent } from './components/question-details/question-details.component';
 import { QuestionListComponent } from './components/question-list/question-list.component';
+import { AddCourseComponent } from './components/add-course/add-course.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -15,13 +16,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
   declarations: [
     AppComponent,
     AddQuestionComponent,
     QuestionDetailsComponent,
-    QuestionListComponent
+    QuestionListComponent,
+    AddCourseComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +36,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatIconModule,
     MatButtonModule,
     MatInputModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]
