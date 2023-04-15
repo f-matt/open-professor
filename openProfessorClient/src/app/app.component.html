@@ -1,7 +1,8 @@
 <mat-toolbar color="primary">
-  <button mat-icon-button aria-label="Menu">
+  <button mat-icon-button (click)="sidenav.toggle()">
     <mat-icon>menu</mat-icon>
   </button>
+
   <span>Open Professor</span>
   <span class="simple-spacer"></span>
 
@@ -13,4 +14,22 @@
   </button>
 </mat-toolbar>
 
-<router-outlet></router-outlet>
+<mat-sidenav-container>
+  <mat-sidenav #sidenav mode="side">
+        <button mat-menu-item [matMenuTriggerFor]="menuCourses">Courses</button>
+        <button mat-menu-item [matMenuTriggerFor]="menuQuestions">Questions</button>
+    
+    <mat-menu #menuCourses="matMenu">
+      <button mat-menu-item routerLink="/courses/add">New</button>
+      <button mat-menu-item routerLink="/courses">List</button>
+    </mat-menu>
+    
+    <mat-menu #menuQuestions="matMenu">
+      <button mat-menu-item routerLink="/questions/add">New</button>
+      <button mat-menu-item routerLink="/questions">List</button>
+    </mat-menu>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

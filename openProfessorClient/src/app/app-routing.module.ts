@@ -4,13 +4,15 @@ import { AddQuestionComponent } from './components/add-question/add-question.com
 import { QuestionDetailsComponent } from './components/question-details/question-details.component';
 import { QuestionListComponent } from './components/question-list/question-list.component';
 import { AddCourseComponent } from './components/add-course/add-course.component';
+import { CourseListComponent } from './components/course-list/course-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'questions', pathMatch: 'full' },
   { path: 'questions', component: QuestionListComponent },
   { path: 'questions/detail/:id', component: QuestionDetailsComponent },
   { path: 'questions/add', component: AddQuestionComponent },
-  { path: 'courses', component: AddCourseComponent },
+  { path: 'courses/add', component: AddCourseComponent },
+  { path: 'courses', component: CourseListComponent },
 ];
 
 @NgModule({

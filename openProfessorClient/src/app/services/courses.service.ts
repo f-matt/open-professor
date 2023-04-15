@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Course } from '../models/course';
+import { map } from 'rxjs';
 
 const baseUrl = 'http://localhost:8000/api/courses';
 
@@ -26,7 +27,7 @@ export class CoursesService {
   }
 
   getAll() : Observable<Course[]> {
-    return this.httpClient.get<Course[]>(baseUrl);
+    return this.httpClient.get<any>(baseUrl).pipe(map(data => data.courses));
   }
 
 }

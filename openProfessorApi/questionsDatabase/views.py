@@ -127,12 +127,17 @@ def question_detail(request, pk):
     except Question.DoesNotExist:
         return JsonResponse({'message' : 'Question not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['POST'])
+@api_view(["GET", "POST"])
 def courses(request):
-    data = json.loads(request.body)
+    if request.method == "POST":
+      data = json.loads(request.body)
 
-    course = Course()
-    course.name = data["name"]
-    course.save()
+      course = Course()
+      course.name = data["name"]
+      course.save()
 
-    return JsonResponse({"status" : "ok"})
+      return JsonResponse({"status" : "ok"})
+    elif request.method == "GET":
+      courses = Course.objects.all().values()
+
+      return JsonResponse({'courses' : list(courses)})
