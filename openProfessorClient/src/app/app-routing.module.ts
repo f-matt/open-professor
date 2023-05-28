@@ -5,6 +5,7 @@ import { QuestionDetailsComponent } from './components/question-details/question
 import { QuestionListComponent } from './components/question-list/question-list.component';
 import { AddCourseComponent } from './components/add-course/add-course.component';
 import { CourseListComponent } from './components/course-list/course-list.component';
+import { DownloadsComponent } from './downloads/downloads.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'questions', pathMatch: 'full' },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'questions/add', component: AddQuestionComponent },
   { path: 'courses/add', component: AddCourseComponent },
   { path: 'courses', component: CourseListComponent },
+  { path: 'downloads', component: DownloadsComponent },
 ];
 
 @NgModule({

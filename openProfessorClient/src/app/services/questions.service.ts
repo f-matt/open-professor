@@ -16,11 +16,15 @@ export class QuestionsService {
   save(question : Question, correctAnswer : Answer, wrongAnswer1 : Answer,
     wrongAnswer2 : Answer, wrongAnswer3 : Answer) : Observable<any> {
 
+      console.log('test');
+      console.log(question.course);
+
     let data = {'question' : question.text, 
       'correct' : correctAnswer.text,
       'wrong1' : wrongAnswer1.text, 
       'wrong2' : wrongAnswer2.text, 
-      'wrong3' : wrongAnswer3.text};
+      'wrong3' : wrongAnswer3.text,
+      'course_id' : question.course?.id};
 
     const httpOptions = {
       headers: new HttpHeaders({

@@ -3,8 +3,8 @@
 <form>
     <mat-form-field appearance="fill">
         <mat-label>Course</mat-label>
-        <mat-select>
-          <mat-option *ngFor="let course of courses" [value]="question.course">
+        <mat-select name="course"  [(ngModel)]="question.course">
+          <mat-option *ngFor="let course of courses" [value]="course">
             {{course.name}}
           </mat-option>
         </mat-select>

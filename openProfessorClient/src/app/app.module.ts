@@ -22,6 +22,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
+import { DownloadsComponent } from './downloads/downloads.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { MatTableModule } from '@angular/material/table';
     QuestionDetailsComponent,
     QuestionListComponent,
     AddCourseComponent,
-    CourseListComponent
+    CourseListComponent,
+    DownloadsComponent
   ],
   imports: [
     BrowserModule,

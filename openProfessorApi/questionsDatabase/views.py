@@ -65,8 +65,12 @@ def question_list(request):
     if request.method == "POST":
         data = json.loads(request.body)
 
+        course_id = data["course_id"]
+        course = Course.objects.get(pk=course_id)
+
         question = Question()
         question.text = data["question"]
+        question.course = course
         question.save()
 
         correct_answer = Answer()

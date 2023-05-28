@@ -18,6 +18,7 @@
   <mat-sidenav #sidenav mode="side">
         <button mat-menu-item [matMenuTriggerFor]="menuCourses">Courses</button>
         <button mat-menu-item [matMenuTriggerFor]="menuQuestions">Questions</button>
+        <button mat-menu-item [matMenuTriggerFor]="menuDownloads">Downloads</button>
     
     <mat-menu #menuCourses="matMenu">
       <button mat-menu-item routerLink="/courses/add">New</button>
@@ -28,8 +29,13 @@
       <button mat-menu-item routerLink="/questions/add">New</button>
       <button mat-menu-item routerLink="/questions">List</button>
     </mat-menu>
+    
+    <mat-menu #menuDownloads="matMenu">
+      <button mat-menu-item routerLink="/downloads">Downloads</button>
+    </mat-menu>
+
   </mat-sidenav>
-  <mat-sidenav-content>
+  <mat-sidenav-content style="height:100%">
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
