@@ -12,7 +12,7 @@ export class QuestionListComponent {
   constructor(private questionsService : QuestionsService) {}
 
   download() {
-		this.questionsService.downloadFile().subscribe((response: any) => {
+		this.questionsService.downloadMoodle('').subscribe((response: any) => {
 			let blob:any = new Blob([response], { type: 'text/json; charset=utf-8' });
 			const url = window.URL.createObjectURL(blob);
 			//window.open(url);

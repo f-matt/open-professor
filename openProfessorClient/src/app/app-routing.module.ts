@@ -5,7 +5,7 @@ import { QuestionDetailsComponent } from './components/question-details/question
 import { QuestionListComponent } from './components/question-list/question-list.component';
 import { AddCourseComponent } from './components/add-course/add-course.component';
 import { CourseListComponent } from './components/course-list/course-list.component';
-import { DownloadsComponent } from './downloads/downloads.component';
+import { DownloadsComponent } from './components/downloads/downloads.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'questions', pathMatch: 'full' },

@@ -20,3 +20,14 @@ CREATE TABLE answers (
     PRIMARY KEY (id),
     FOREIGN KEY (question_id) REFERENCES questions (id)
 );
+
+CREATE TABLE parameters (
+    id SERIAL,
+    name VARCHAR (50),
+    value TEXT,
+    PRIMARY KEY (id)
+);
+
+INSERT INTO parameters (name, value) VALUES ('MOODLE_HEADER', '');
+INSERT INTO parameters (name, value) VALUES ('MOODLE_MASK', '');
+INSERT INTO parameters (name, value) VALUES ('LATEX_MASK', '');

@@ -1,0 +1,36 @@
+<h2>Downloading file:</h2>
+
+<form>
+    <mat-form-field appearance="fill">
+        <mat-label>Course</mat-label>
+        <mat-select name="course"  [(ngModel)]="selectedCourse">
+          <mat-option *ngFor="let course of courses" [value]="course">
+            {{course.name}}
+          </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <br><br>
+    <button mat-flat-button color="primary" (click)="downloadAll()">Download All</button>
+    <br><br>
+
+    <mat-form-field class="w-100">
+        <mat-label>Question IDs (comma-separated list)</mat-label>
+        <input matInput
+            name="moodleIds"
+            [(ngModel)]="moodleIds">
+    </mat-form-field>
+
+    <br><br>
+    <button mat-flat-button color="primary" (click)="downloadMoodle()">Download (Moodle XML)</button>
+
+    <mat-form-field class="w-100">
+        <mat-label>Question IDs (comma-separated list)</mat-label>
+        <input matInput
+            name="latexIds"
+            [(ngModel)]="latexIds">
+    </mat-form-field>
+
+    <br><br>
+    <button mat-flat-button color="primary" (click)="downloadLatex()">Download (Latex)</button>
+</form>

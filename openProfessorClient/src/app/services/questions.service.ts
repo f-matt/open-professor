@@ -3,8 +3,9 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError } from 'rxjs';
 import { Question } from '../models/question.model';
 import { Answer } from '../models/answer.model';
+import { Course } from '../models/course';
 
-const baseUrl = 'http://localhost:8000/api/';
+const baseUrl = 'http://localhost:8000/api';
 
 @Injectable({
   providedIn: 'root'
@@ -35,8 +36,16 @@ export class QuestionsService {
     return this.httpClient.post<any>(baseUrl + 'questions', data, httpOptions);
   }
 
-  downloadFile(): any {
-		return this.httpClient.get(baseUrl + 'questions', {responseType: 'blob'});
+  downloadMoodle(ids:string): any {
+		return this.httpClient.get(`${baseUrl}/download-moodle/"${ids}"`, {responseType: 'blob'});
+  }
+
+  downloadLatex(ids:string): any {
+		return this.httpClient.get(`${baseUrl}/download-latex/${ids}`, {responseType: 'blob'});
+  }
+
+  downloadAll(course: Course): any {
+		return this.httpClient.get(`${baseUrl}/download-all/${course.id}`, {responseType: 'blob'});
   }
    
   getAll() : Observable<Question[]> {
@@ -53,6 +62,10 @@ export class QuestionsService {
 
   delete(id : any) : Observable<any> {
     return this.httpClient.delete(`${baseUrl}/${id}`);
+  }
+
+  getIds(course : Course) : Observable<Number[]> {
+    return this.httpClient.get<Number[]>(`${baseUrl}/questions/course/${course.id}`);
   }
 
 }
