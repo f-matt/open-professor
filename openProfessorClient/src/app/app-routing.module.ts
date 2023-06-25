@@ -6,15 +6,18 @@ import { QuestionListComponent } from './components/question-list/question-list.
 import { AddCourseComponent } from './components/add-course/add-course.component';
 import { CourseListComponent } from './components/course-list/course-list.component';
 import { DownloadsComponent } from './components/downloads/downloads.component';
+import { LoginComponent } from './components/login/login.component';
+import { AuthGuard } from './helpers/auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'questions', pathMatch: 'full' },
-  { path: 'questions', component: QuestionListComponent },
-  { path: 'questions/detail/:id', component: QuestionDetailsComponent },
-  { path: 'questions/add', component: AddQuestionComponent },
-  { path: 'courses/add', component: AddCourseComponent },
-  { path: 'courses', component: CourseListComponent },
-  { path: 'downloads', component: DownloadsComponent },
+  { path: '', redirectTo: 'courses', pathMatch: 'full' },
+  { path: 'questions', component: QuestionListComponent, canActivate: [AuthGuard] },
+  { path: 'questions/detail/:id', component: QuestionDetailsComponent, canActivate: [AuthGuard]},
+  { path: 'questions/add', component: AddQuestionComponent, canActivate: [AuthGuard]},
+  { path: 'courses/add', component: AddCourseComponent, canActivate: [AuthGuard]},
+  { path: 'courses', component: CourseListComponent, canActivate: [AuthGuard]},
+  { path: 'downloads', component: DownloadsComponent, canActivate: [AuthGuard]},
+  { path: 'login', component: LoginComponent },
 ];
 
 @NgModule({

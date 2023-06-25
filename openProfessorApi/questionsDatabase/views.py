@@ -5,11 +5,13 @@ import numpy as np
 
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Course, Question, Answer, Parameter
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def question_list(request):
     if request.method == "POST":
         data = json.loads(request.body)
@@ -49,6 +51,7 @@ def question_list(request):
         return JsonResponse({"status" : "ok"})
 
 @api_view(['GET', 'PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
 def question_detail(request, pk):
     try:
         question = Question.objects.get(pk=pk)
@@ -56,6 +59,7 @@ def question_detail(request, pk):
         return JsonResponse({'message' : 'Question not found.'}, status=JsonResponse.status_code.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def questions_by_course(request, pk):
     try:
         questions = Question.objects.filter(course__id=pk).all()
@@ -70,6 +74,7 @@ def questions_by_course(request, pk):
 
 
 @api_view(["GET", "POST"])
+@permission_classes([IsAuthenticated])
 def courses(request):
     if request.method == "POST":
       data = json.loads(request.body)
@@ -85,6 +90,7 @@ def courses(request):
       return JsonResponse({'courses' : list(courses)})
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def download_moodle(request, ids_str):
     moodle_header = Parameter.objects.filter(name='MOODLE_HEADER').values()
     moodle_mask = Parameter.objects.filter(name='MOODLE_MASK').values()
@@ -116,6 +122,7 @@ def download_moodle(request, ids_str):
     return response
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def download_latex(request, ids_str):
     latex_mask = Parameter.objects.filter(name='LATEX_MASK').values()
     ids = map(int, ids_str.split(','))
@@ -172,6 +179,7 @@ def download_latex(request, ids_str):
     return response
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def download_all(request, course_id):
     moodle_header = Parameter.objects.filter(name='MOODLE_HEADER').values()[0]
     moodle_mask = Parameter.objects.filter(name='MOODLE_MASK').values()[0]

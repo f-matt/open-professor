@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http'
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -23,6 +23,9 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { DownloadsComponent } from './components/downloads/downloads.component';
+import { LoginComponent } from './components/login/login.component';
+import { JwtInterceptor } from './helpers/jwt.interceptor';
+import { ErrorInterceptor } from './helpers/error.interceptor';
 
 @NgModule({
   declarations: [
@@ -32,7 +35,8 @@ import { DownloadsComponent } from './components/downloads/downloads.component';
     QuestionListComponent,
     AddCourseComponent,
     CourseListComponent,
-    DownloadsComponent
+    DownloadsComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,7 +55,10 @@ import { DownloadsComponent } from './components/downloads/downloads.component';
     MatListModule,
     MatTableModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
