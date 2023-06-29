@@ -26,7 +26,7 @@ class Answer(models.Model):
 
 class Parameter(models.Model):
     name = models.CharField(max_length=20, blank=False)
-    value = models.CharField(blank=False)
+    value = models.CharField(max_length=20, blank=False)
 
     class Meta:
         db_table = "parameters"

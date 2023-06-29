@@ -1,0 +1,8 @@
+$ python3 -m venv venv
+$ source venv/bin/activate
+$ python manage.py migrate
+$ 
+
+
+curl -X POST -H "Content-Type: application/json" -d '{"username": "<username>", "password": "<password>"}' http://localhost:8000/api/token/
+curl -H "Authorization: Bearer <token>" http://localhost:8000/
