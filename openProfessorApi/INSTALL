@@ -1,4 +1,3 @@
-
 1. Clone the repository:
 $ git clone https://github.com/f-matt/open-professor.git
 
@@ -6,14 +5,15 @@ $ git clone https://github.com/f-matt/open-professor.git
 
 3. Configure .env file.
 
-4. Deploy
-$ sudo sh deploy.sh
-
-
-5. Configure systemd service:
+4. Configure required user:
 $ groupadd -r gunicorn
 $ useradd -r -g gunicorn -s /sbin/nologin gunicorn
 
+5. Deploy
+$ chmod +x deploy.sh
+$ sudo ./deploy.sh
+
+5. Configure systemd service:
 - File /etc/gunicorn/open_professor:
 
 PORT=8000
@@ -62,18 +62,4 @@ PrivateTmp=true
 [Install]
 WantedBy=multi-user.target
 
-
-- File /etc/systemd/system/gunicorn.socket:
-
-[Unit]
-Description=gunicorn socket
-
-[Socket]
-ListenStream=/run/gunicorn.sock
-SocketUser=nginx
-
-[Install]
-WantedBy=sockets.target
-
-$ systemctl enable --now gunicorn.socket
 $ systemctl enable --now gunicorn@open_professor
