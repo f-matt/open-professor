@@ -1,10 +1,79 @@
-1. Install postgresql-server, create database and user.
 
-2. Configure .env file.
+1. Clone the repository:
+$ git clone https://github.com/f-matt/open-professor.git
 
-3. Configure virtualenv:
+2. Install postgresql-server, create database and user.
 
-$ python3 -m venv venv
-$ source venv/bin/activate
-$ pip install -r requirements.txt
+3. Configure .env file.
 
+4. Deploy
+$ sudo sh deploy.sh
+
+
+5. Configure systemd service:
+$ groupadd -r gunicorn
+$ useradd -r -g gunicorn -s /sbin/nologin gunicorn
+
+- File /etc/gunicorn/open_professor:
+
+PORT=8000
+SRC_PATH="/var/gunicorn/open_professor"
+ENV_PATH="/var/gunicorn/open_professor/venv"
+APP_NAME="openProfessorApi"
+ACCESS_LOGFILE="/var/log/gunicorn/open_professor_access.log"
+ERROR_LOGFILE="/var/log/gunicorn/open_professor_error.log"
+
+
+- File /usr/local/bin/start_gunicorn
+
+#!/bin/bash
+
+exec "${ENV_PATH}/bin/gunicorn" \
+        --bind="127.0.0.1:${PORT}" \
+        --access-logformat="%({X-Real-IP}i)s %(l)s %(u)s %(t)s \'%(r)s\' %(s)s %(b)s \'%(f)s\' \'%(a)s\'" \
+        --access-logfile="$ACCESS_LOGFILE" \
+        --error-logfile="$ERROR_LOGFILE" \
+        --log-level="warning" \
+        --chdir="$SRC_PATH" \
+        "${APP_NAME}.wsgi:application"
+
+
+- File /etc/systemd/system/gunicorn@.service:
+
+[Unit]
+Description=Gunicorn daemon for %I
+Requires=gunicorn.socket
+After=network.target
+After=syslog.target
+
+[Service]
+Type=notify
+User=gunicorn
+Group=gunicorn
+RuntimeDirectory=gunicorn
+WorkingDirectory=/var/gunicorn/%i
+EnvironmentFile=/etc/gunicorn/%i
+ExecStart=/usr/local/bin/start_gunicorn
+ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
+TimeoutStopSec=5
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+
+
+- File /etc/systemd/system/gunicorn.socket:
+
+[Unit]
+Description=gunicorn socket
+
+[Socket]
+ListenStream=/run/gunicorn.sock
+SocketUser=nginx
+
+[Install]
+WantedBy=sockets.target
+
+$ systemctl enable --now gunicorn.socket
+$ systemctl enable --now gunicorn@open_professor
