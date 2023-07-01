@@ -1,11 +1,11 @@
-if [ ! -d /var/gunicorn/open_professor ];
+if [ ! -d /usr/share/nginx/html/gunicorn/open_professor ];
 then
-    mkdir -p /var/gunicorn/open_professor
+    mkdir -p /usr/share/nginx/html/gunicorn/open_professor
 fi
-cp -r * /var/gunicorn/open_professor/
-cd /var/gunicorn/open_professor
+cp -r * /usr/share/nginx/html/gunicorn/open_professor/
+cd /usr/share/nginx/html/gunicorn/open_professor
 
-if [ ! -d /var/gunicorn/open_professor/venv ];
+if [ ! -d /usr/share/nginx/html/gunicorn/open_professor/venv ];
 then
     python3 -m venv venv
 fi
@@ -15,4 +15,5 @@ pip install --upgrade pip
 pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
-chown -R gunicorn:gunicorn /var/gunicorn/open_professor
+python manage.py collecstatic
+chown -R nginx:nginx /usr/share/nginx/html/gunicorn/open_professor
