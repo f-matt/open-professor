@@ -3,22 +3,23 @@ $ git clone https://github.com/f-matt/open-professor.git
 
 2. Install postgresql-server, create database and user.
 
-3. Configure .env file.
+3. Install nginx
 
-4. Configure required user:
+4. Configure .env file.
+
+5. Configure required user:
 $ groupadd -r gunicorn
 $ useradd -r -g gunicorn -s /sbin/nologin gunicorn
 
-5. Deploy
-$ chmod +x deploy.sh
+6. Deploy
 $ sudo ./deploy.sh
 
-5. Configure systemd service:
+7. Configure systemd service:
 - File /etc/gunicorn/open_professor:
 
 PORT=8000
-SRC_PATH="/var/gunicorn/open_professor"
-ENV_PATH="/var/gunicorn/open_professor/venv"
+SRC_PATH="/usr/share/nginx/html/gunicorn/open_professor"
+ENV_PATH="/usr/share/nginx/html/gunicorn/open_professor/venv"
 APP_NAME="openProfessorApi"
 ACCESS_LOGFILE="/var/log/gunicorn/open_professor_access.log"
 ERROR_LOGFILE="/var/log/gunicorn/open_professor_error.log"
@@ -42,7 +43,6 @@ exec "${ENV_PATH}/bin/gunicorn" \
 
 [Unit]
 Description=Gunicorn daemon for %I
-Requires=gunicorn.socket
 After=network.target
 After=syslog.target
 
@@ -51,7 +51,7 @@ Type=notify
 User=gunicorn
 Group=gunicorn
 RuntimeDirectory=gunicorn
-WorkingDirectory=/var/gunicorn/%i
+WorkingDirectory=/usr/share/nginx/html/gunicorn/%i
 EnvironmentFile=/etc/gunicorn/%i
 ExecStart=/usr/local/bin/start_gunicorn
 ExecReload=/bin/kill -s HUP $MAINPID
@@ -63,3 +63,13 @@ PrivateTmp=true
 WantedBy=multi-user.target
 
 $ systemctl enable --now gunicorn@open_professor
+
+
+8. Configure Nginx SSL
+
+$ sudo openssl genrsa -des3 -out ~/private-key.pem 2048
+$ sudo openssl req -new -x509 -key ~/private-key.pem -out ~/self-cert.pem -days 10950
+$ sudo openssl rsa -in ~/private-key.pem -out ~/self.key
+$ sudo mkdir /etc/nginx/ssl
+$ sudo cp ~/self.key /etc/nginx/ssl/
+$ sudo cp ~/self-cert.pem /etc/nginx/ssl/

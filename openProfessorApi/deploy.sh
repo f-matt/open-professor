@@ -15,5 +15,5 @@ pip install --upgrade pip
 pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
-python manage.py collecstatic
+python manage.py collectstatic
 chown -R nginx:nginx /usr/share/nginx/html/gunicorn/open_professor
