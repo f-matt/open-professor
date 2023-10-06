@@ -30,12 +30,12 @@ export class AddQuestionComponent implements OnInit {
 
   save() : void {
     if (this.question == null || this.question.text == null) {
-      this.snackBar.open("Question text is mandatory.");
+      this.snackBar.open("Question text is mandatory.", "", { duration: 3000 });
       return;
     }
 
     if (this.correctAnswer == null || this.correctAnswer.text == null) {
-      this.snackBar.open("Correct answer is mandatory.");
+      this.snackBar.open("Correct answer is mandatory.", "", { duration: 3000 });
       return;
     }
     
@@ -43,13 +43,24 @@ export class AddQuestionComponent implements OnInit {
       this.wrongAnswer2 == null || this.wrongAnswer2.text == null ||
       this.wrongAnswer3 == null || this.wrongAnswer3.text == null) {
 
-      this.snackBar.open("You need to inform three wrong answers.");
+      this.snackBar.open("You need to inform three wrong answers.", "", { duration: 3000 });
+      return;
+    }
+
+    if (this.question.course == null) {
+      this.snackBar.open("Course is mandatory.", "", { duration: 3000 });
       return;
     }
 
     this.questionsService.save(this.question, this.correctAnswer, this.wrongAnswer1,
-      this.wrongAnswer2, this.wrongAnswer3).subscribe(() => this.snackBar.open("Question successfully saved!"));
-
+      this.wrongAnswer2, this.wrongAnswer3).subscribe(() => {
+        this.snackBar.open("Question successfully saved!", "", { duration: 3000 });
+        this.question = new Question();
+        this.correctAnswer = new Answer();
+        this.wrongAnswer1 = new Answer();
+        this.wrongAnswer2 = new Answer();
+        this.wrongAnswer3 = new Answer();
+      });
   }
 
 }

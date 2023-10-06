@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from .models import Course, Question, Answer, Parameter
 
-@api_view(['POST'])
+@api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def question_list(request):
     if request.method == "POST":
@@ -49,6 +49,10 @@ def question_list(request):
         wrong_answer3.save()
 
         return JsonResponse({"status" : "ok"})
+
+    elif request.method == "GET":
+      questions = Question.objects.all().values()
+      return JsonResponse({'questions' : list(questions)})
 
 @api_view(['GET', 'PUT', 'DELETE'])
 @permission_classes([IsAuthenticated])

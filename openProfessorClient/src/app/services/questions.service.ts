@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError } from 'rxjs';
+import { Observable, catchError, map } from 'rxjs';
 import { Question } from '../models/question.model';
 import { Answer } from '../models/answer.model';
 import { Course } from '../models/course';
@@ -33,7 +33,7 @@ export class QuestionsService {
       })
     };
 
-    return this.httpClient.post<any>(baseUrl + 'questions', data, httpOptions);
+    return this.httpClient.post<any>(`${baseUrl}/questions`, data, httpOptions);
   }
 
   downloadMoodle(ids:string): any {
@@ -49,7 +49,7 @@ export class QuestionsService {
   }
    
   getAll() : Observable<Question[]> {
-    return this.httpClient.get<Question[]>(baseUrl + 'questions');
+    return this.httpClient.get<any>(baseUrl + 'questions').pipe(map(data => data.questions));
   }
 
   get(id : any) : Observable<Question> {
