@@ -64,7 +64,8 @@
               "browserTarget": "openProfessorClient:build:production"
             },
             "development": {
-              "browserTarget": "openProfessorClient:build:development"
+              "browserTarget": "openProfessorClient:build:development",
+              "proxyConfig": "src/proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

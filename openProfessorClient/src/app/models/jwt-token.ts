@@ -1,7 +1,7 @@
 export class JwtToken {
 
-    refresh: string = '';
+    access_token: string = "";
 
-    access: string = '';
+    refresh_token: string = "";
 
 }

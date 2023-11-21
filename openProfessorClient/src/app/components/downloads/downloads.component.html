@@ -10,6 +10,13 @@
         </mat-select>
     </mat-form-field>
 
+    <mat-form-field appearance="fill">
+        <mat-label>Section</mat-label>
+        <input matInput 
+            name="section"
+            [(ngModel)]="section">
+    </mat-form-field>
+
     <br><br>
     <button mat-flat-button color="primary" (click)="downloadAll()">Download All</button>
     <br><br>

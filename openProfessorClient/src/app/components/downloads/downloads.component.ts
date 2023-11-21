@@ -16,6 +16,7 @@ export class DownloadsComponent {
 	courses : Course[] = [];
 	moodleIds : string = '';
 	latexIds : string = '';
+	section?: number; 
 
 	constructor(
 		private snackBar : MatSnackBar,
@@ -67,7 +68,12 @@ export class DownloadsComponent {
 	}
 
 	downloadAll() {
-		this.questionsService.downloadAll(this.selectedCourse).subscribe((response: any) => {
+		if (!this.selectedCourse || !this.section) {
+			this.snackBar.open("Course and section are mandatory.");
+			return;
+		}
+
+		this.questionsService.downloadAll(this.selectedCourse, this.section).subscribe((response: any) => {
 			let blob:any = new Blob([response], { type: 'text/json; charset=utf-8' });
 			const url = window.URL.createObjectURL(blob);
 			saveAs(blob, 'download.zip');

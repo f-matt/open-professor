@@ -5,7 +5,7 @@ import { Question } from '../models/question.model';
 import { Answer } from '../models/answer.model';
 import { Course } from '../models/course';
 
-const baseUrl = 'http://localhost:8000/api';
+const baseUrl = '/api';
 
 @Injectable({
   providedIn: 'root'
@@ -16,9 +16,6 @@ export class QuestionsService {
 
   save(question : Question, correctAnswer : Answer, wrongAnswer1 : Answer,
     wrongAnswer2 : Answer, wrongAnswer3 : Answer) : Observable<any> {
-
-      console.log('test');
-      console.log(question.course);
 
     let data = {'question' : question.text, 
       'correct' : correctAnswer.text,
@@ -44,8 +41,8 @@ export class QuestionsService {
 		return this.httpClient.get(`${baseUrl}/download-latex/${ids}`, {responseType: 'blob'});
   }
 
-  downloadAll(course: Course): any {
-		return this.httpClient.get(`${baseUrl}/download-all/${course.id}`, {responseType: 'blob'});
+  downloadAll(course: Course, section: number): any {
+		return this.httpClient.get(`${baseUrl}/download-all?course_id=${course.id}&section=${section}`, {responseType: 'blob'});
   }
    
   getAll() : Observable<Question[]> {

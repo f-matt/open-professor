@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { Course } from '../models/course';
 import { map } from 'rxjs';
 
-const baseUrl = 'http://localhost:8000/api/courses';
+const baseUrl = '/api/courses';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,7 @@ export class CoursesService {
   }
 
   getAll() : Observable<Course[]> {
-    return this.httpClient.get<any>(baseUrl).pipe(map(data => data.courses));
+    return this.httpClient.get<any>(baseUrl).pipe(map(data => data));
   }
 
 }

@@ -44,13 +44,13 @@ export class ErrorInterceptor implements HttpInterceptor {
       const token = this.authService.tokenValue;
 
       if (token) {
-        return this.authService.refresh().pipe(
+        return this.authService.refreshToken().pipe(
           switchMap((token: any) => {
             this.isRefreshing = false;
 
-            this.refreshTokenSubject.next(token.accessToken);
+            this.refreshTokenSubject.next(token.access_token);
             
-            return next.handle(this.addTokenHeader(request, token.accessToken));
+            return next.handle(this.addTokenHeader(request, token.access_token));
           }),
           catchError((err) => {
             this.isRefreshing = false;
@@ -61,6 +61,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         );
       }
 
+      this.authService.logout();
       return throwError(() => new Error('Token not found...'));
     }
 

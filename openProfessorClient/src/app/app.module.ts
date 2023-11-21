@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http'
+import { HTTP_INTERCEPTORS, HttpClientModule, HttpRequest } from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,6 +11,8 @@ import { QuestionDetailsComponent } from './components/question-details/question
 import { QuestionListComponent } from './components/question-list/question-list.component';
 import { AddCourseComponent } from './components/add-course/add-course.component';
 import { CourseListComponent } from './components/course-list/course-list.component';
+
+import { JwtModule } from '@auth0/angular-jwt';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,8 +26,25 @@ import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
 import { DownloadsComponent } from './components/downloads/downloads.component';
 import { LoginComponent } from './components/login/login.component';
-import { JwtInterceptor } from './helpers/jwt.interceptor';
 import { ErrorInterceptor } from './helpers/error.interceptor';
+
+const TOKEN_NAME = "openProfessorToken";
+
+export function tokenGetter(request: HttpRequest<any> | undefined) {
+  const tokenJson = localStorage.getItem(TOKEN_NAME);
+  if (!tokenJson)
+    return null;
+
+  const token = JSON.parse(tokenJson);
+  if (!token || !token.access_token)
+    return null;
+
+  if (request && request.url.includes("refresh")) {
+    return token.refresh_token;
+  }
+
+  return token.access_token;
+}
 
 @NgModule({
   declarations: [
@@ -42,7 +61,14 @@ import { ErrorInterceptor } from './helpers/error.interceptor';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule,
+    HttpClientModule,    
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: (request:HttpRequest<any> | undefined) => tokenGetter(request),
+        allowedDomains: ['localhost:5000'],
+        disallowedRoutes: []
+      },
+    }),
     BrowserAnimationsModule,
     MatToolbarModule,
     MatIconModule,
@@ -56,7 +82,6 @@ import { ErrorInterceptor } from './helpers/error.interceptor';
     MatTableModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
   ],
   bootstrap: [AppComponent]

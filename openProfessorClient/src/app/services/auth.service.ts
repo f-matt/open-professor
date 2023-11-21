@@ -3,11 +3,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map } from 'rxjs';
 import { JwtToken } from '../models/jwt-token';
 import { Router } from '@angular/router';
+import { JwtHelperService } from '@auth0/angular-jwt';
   
-const baseUrl = 'http://localhost:8000/api';
+const baseUrl = "/api";
+
+const TOKEN_NAME = "openProfessorToken";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class AuthService {
 
@@ -15,37 +18,56 @@ export class AuthService {
 
   constructor(
     private httpClient: HttpClient,
-    private router: Router) { 
+    private router: Router,
+    private jwtHelperService: JwtHelperService) { 
 
-    this.tokenSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('openProfessorToken')!));
+    const tokenJson = localStorage.getItem(TOKEN_NAME);
+    if (tokenJson) {
+      let token = JSON.parse(tokenJson);
+      this.tokenSubject = new BehaviorSubject(token);
+    } else {
+      this.tokenSubject = new BehaviorSubject<JwtToken | null>(null);
+    }
   }
 
   public get tokenValue() {
-    return this.tokenSubject.value;
+    const token = this.tokenSubject.value;
+
+    if (token && !this.jwtHelperService.isTokenExpired(token.access_token))
+      return token.access_token;
+
+    return null;
   }
 
   login(username: string, password: string) {
-    return this.httpClient.post<JwtToken>(`${baseUrl}/token/`, 
+    return this.httpClient.post<JwtToken>(`${baseUrl}/login`, 
       {'username':username, 'password':password})
       .pipe(map(token => {
-        localStorage.setItem('openProfessorToken', JSON.stringify(token));
+        localStorage.setItem(TOKEN_NAME, JSON.stringify(token));
         this.tokenSubject.next(token);
         return token;
       }));
   }
 
-  refresh() {
-    return this.httpClient.post<JwtToken>(`${baseUrl}/token/refresh`, 
+  refreshToken() {
+    return this.httpClient.post<JwtToken>(`${baseUrl}/refresh`, 
       {})
       .pipe(map(token => {
-        localStorage.setItem('openProfessorToken', JSON.stringify(token));
-        this.tokenSubject.next(token);
-        return token;
+        const existingTokenJson = localStorage.getItem(TOKEN_NAME);
+        if (existingTokenJson) {
+          let existingToken: JwtToken = JSON.parse(existingTokenJson);
+          existingToken.access_token = token.access_token;
+          localStorage.setItem(TOKEN_NAME, JSON.stringify(existingToken));
+          this.tokenSubject.next(existingToken);
+          return existingToken;
+        }
+
+        return null;
       }));
   }
 
   logout() {
-    localStorage.removeItem('openProfesorToken');
+    localStorage.removeItem(TOKEN_NAME);
     this.tokenSubject.next(null);
     this.router.navigate(['/login']);
   }
