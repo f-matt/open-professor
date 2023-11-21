@@ -2,10 +2,4 @@ $ python3 -m venv venv
 $ source venv/bin/activate
 $ pip install -r requirements.txt
 
-### Configure openProfessorApi/.env file
-$ python manage.py makemigrations
-$ python manage.py migrate
-$ python manage.py createsuperuser
-
-curl -X POST -H "Content-Type: application/json" -d '{"username": "<username>", "password": "<password>"}' http://localhost:8000/api/token/
-curl -H "Authorization: Bearer <token>" http://localhost:8000/
+$ flask run --debug
