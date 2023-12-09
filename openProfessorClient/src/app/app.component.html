@@ -20,9 +20,9 @@
 
 <mat-sidenav-container style="height:100%">
   <mat-sidenav #sidenav mode="side">
-        <button mat-menu-item [matMenuTriggerFor]="menuCourses">Courses</button>
-        <button mat-menu-item [matMenuTriggerFor]="menuQuestions">Questions</button>
-        <button mat-menu-item [matMenuTriggerFor]="menuDownloads">Downloads</button>
+        <button *ngIf="hasPermission('ADMIN')" mat-menu-item [matMenuTriggerFor]="menuCourses">Courses</button>
+        <button *ngIf="hasPermission('ADMIN')" mat-menu-item [matMenuTriggerFor]="menuQuestions">Questions</button>
+        <button *ngIf="hasPermission('ADMIN')" mat-menu-item [matMenuTriggerFor]="menuDownloads">Downloads</button>
     
     <mat-menu #menuCourses="matMenu">
       <button mat-menu-item routerLink="/courses/add">New</button>

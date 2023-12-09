@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, map } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Observable, catchError, map, throwError } from 'rxjs';
 import { Question } from '../models/question.model';
 import { Answer } from '../models/answer.model';
 import { Course } from '../models/course';
@@ -37,8 +37,19 @@ export class QuestionsService {
 		return this.httpClient.get(`${baseUrl}/download-moodle/"${ids}"`, {responseType: 'blob'});
   }
 
-  downloadLatex(ids:string): any {
-		return this.httpClient.get(`${baseUrl}/download-latex/${ids}`, {responseType: 'blob'});
+  downloadLatex(course: Course, section?: number): any {
+    if (!course)
+      throwError(() => new Error("Course is mandatory."));
+
+    let httpParams: HttpParams = new HttpParams();
+    if (course.id)
+      httpParams = httpParams.set("course", course.id);
+
+    if (section)
+      httpParams = httpParams.set("section", section);
+
+		return this.httpClient.get(`${baseUrl}/download-latex`, 
+      {params: httpParams, responseType: 'blob'});
   }
 
   downloadAll(course: Course, section: number): any {

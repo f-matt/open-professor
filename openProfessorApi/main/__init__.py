@@ -2,18 +2,16 @@ from flask import Flask
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from flask_jwt_extended import JWTManager, get_jwt, create_access_token, get_jwt_identity, \
-    set_access_cookies, verify_jwt_in_request
+from flask_jwt_extended import JWTManager 
 from flask_restful import Api
+
+from sqlalchemy.orm import DeclarativeBase
 
 from pathlib import Path
 from dotenv import load_dotenv
-from datetime import datetime, timedelta, timezone
 
 import os
 import logging
-import traceback
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, '.env'))
@@ -21,8 +19,12 @@ load_dotenv(os.path.join(BASE_DIR, '.env'))
 app = Flask(__name__)
 
 # SqlAlchemy
+class Base(DeclarativeBase):
+    pass
+db = SQLAlchemy(model_class=Base)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URI")
-db = SQLAlchemy(app)
+db.init_app(app)
 
 # flask-restful
 api = Api(app)
@@ -39,13 +41,12 @@ handler = logging.FileHandler("/var/log/open_professor.log")
 handler.setLevel(logging.ERROR)
 app.logger.addHandler(handler)
 
-
 # Routes
 from auth.services import LoginService
 from courses.services import CoursesService
 from questions.services import QuestionsService
 from answers.services import AnswersService
-from downloads.services import DownloadsService
+from downloads.services import DownloadsService, DownloadLatex
 
 @app.route("/api")
 def index():
@@ -56,3 +57,4 @@ api.add_resource(CoursesService, "/api/courses")
 api.add_resource(QuestionsService, "/api/questions")
 api.add_resource(AnswersService, "/api/answers")
 api.add_resource(DownloadsService, "/api/download-all")
+api.add_resource(DownloadLatex, "/api/download-latex")

@@ -1,7 +1,7 @@
 from flask import jsonify, request
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required
-from sqlalchemy import func
+from sqlalchemy import func, text
 from main import app, db
 from auth.models import User
 
@@ -18,24 +18,30 @@ class LoginService(Resource):
             return jsonify({"message": "Username and password required."}), 401
 
         try:
-            user = User.query.filter(User.username.ilike(username.lower())).first()
+            query = db.select(User).where(User.username.ilike(username))
+            user = db.session.execute(query).one_or_none()[0]
 
             if not user:
-                return jsonify({"message": "Invalid username/password."})
+                return jsonify({"message": "Invalid username/password."}), 401
 
             s = sha256()
             s.update(password.encode("ascii"))
             encoded = b64encode(s.digest()).decode("ascii")
 
             if encoded == user.password:
-                access_token = create_access_token(identity=username)
+                permissions = list()
+                for r in user.roles:
+                    for p in r.permissions:
+                        permissions.append(p.description)
+
+                access_token = create_access_token(identity=username, additional_claims={"permissions": permissions})
                 refresh_token = create_refresh_token(identity=username)
 
                 return jsonify(access_token=access_token, refresh_token=refresh_token)
         except Exception as e:
             app.logger.error(traceback.format_exc())
 
-        return jsonify({"message": "Invalid username/password."})
+        return {"message": "Error processing authentication."}, 400
 
 class RefreshService(Resource):
     @jwt_required(refresh=True)

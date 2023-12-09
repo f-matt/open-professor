@@ -13,10 +13,14 @@ import { Course } from 'src/app/models/course';
 export class DownloadsComponent {
 
 	selectedCourse : Course = new Course();
+	selectedCourseLatex : Course = new Course();
+
 	courses : Course[] = [];
 	moodleIds : string = '';
 	latexIds : string = '';
+
 	section?: number; 
+	sectionLatex?: number; 
 
 	constructor(
 		private snackBar : MatSnackBar,
@@ -59,12 +63,17 @@ export class DownloadsComponent {
 	}
 
 	downloadLatex() {
-		this.questionsService.downloadLatex(this.latexIds).subscribe((response: any) => {
+		if (!this.selectedCourseLatex) {
+			this.snackBar.open("Course is mandatory.", "", { duration:3000 });
+			return;
+		}
+
+		this.questionsService.downloadLatex(this.selectedCourseLatex, this.sectionLatex).subscribe((response: any) => {
 			let blob:any = new Blob([response], { type: 'text/json; charset=utf-8' });
 			const url = window.URL.createObjectURL(blob);
-			saveAs(blob, 'file.xml');
+			saveAs(blob, 'questions.tex');
 		}), (error: any) => this.snackBar.open("Error downloading file.", '', { duration: 3000}),
-			() => this.snackBar.open("File successfully downloaded!", '', { duration:3000});
+		() => this.snackBar.open("File successfully downloaded!", '', { duration:3000});
 	}
 
 	downloadAll() {

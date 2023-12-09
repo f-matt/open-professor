@@ -13,6 +13,10 @@ import { AddCourseComponent } from './components/add-course/add-course.component
 import { CourseListComponent } from './components/course-list/course-list.component';
 
 import { JwtModule } from '@auth0/angular-jwt';
+import { DownloadsComponent } from './components/downloads/downloads.component';
+import { LoginComponent } from './components/login/login.component';
+import { ErrorInterceptor } from './helpers/error.interceptor';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,9 +28,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatTableModule } from '@angular/material/table';
-import { DownloadsComponent } from './components/downloads/downloads.component';
-import { LoginComponent } from './components/login/login.component';
-import { ErrorInterceptor } from './helpers/error.interceptor';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 const TOKEN_NAME = "openProfessorToken";
 
@@ -62,6 +64,7 @@ export function tokenGetter(request: HttpRequest<any> | undefined) {
     AppRoutingModule,
     FormsModule,
     HttpClientModule,    
+    FlexLayoutModule,
     JwtModule.forRoot({
       config: {
         tokenGetter: (request:HttpRequest<any> | undefined) => tokenGetter(request),
@@ -79,7 +82,8 @@ export function tokenGetter(request: HttpRequest<any> | undefined) {
     MatMenuModule,
     MatSidenavModule,
     MatListModule,
-    MatTableModule
+    MatTableModule,
+    MatExpansionModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},

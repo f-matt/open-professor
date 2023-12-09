@@ -50,6 +50,7 @@ export class AuthService {
   }
 
   refreshToken() {
+    console.log("refresh");
     return this.httpClient.post<JwtToken>(`${baseUrl}/refresh`, 
       {})
       .pipe(map(token => {
@@ -70,6 +71,33 @@ export class AuthService {
     localStorage.removeItem(TOKEN_NAME);
     this.tokenSubject.next(null);
     this.router.navigate(['/login']);
+  }
+
+  hasPermission(permission: string) {
+    try {
+      // User without token
+      let tokenStr = localStorage.getItem(TOKEN_NAME);
+      if (!tokenStr)
+        return false;
+
+      let token = JSON.parse(tokenStr);
+      if (!token || !token.access_token) 
+        return false;
+
+      // Check permission
+      const authInfo = JSON.parse(tokenStr);
+      const payload = this.jwtHelperService.decodeToken(authInfo.token);
+
+      if (payload.permissions && payload.permissions.indexOf(permission) >= 0)
+        return true;
+    } catch (e: unknown) {
+      if (e instanceof Error)
+        throw e;
+      else
+        throw new Error("Error checking permission.");
+    }
+
+    return false;
   }
 
 }

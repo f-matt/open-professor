@@ -1,57 +1,60 @@
 # -*- coding:utf-8 -*-
-from main import db
+from sqlalchemy import Table, Column, ForeignKey
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from typing import List
 
-role_permission = db.Table("auth.roles_permissions",
-    db.Column("role_id", db.Integer, db.ForeignKey("auth.roles.id")),
-    db.Column("permission_id", db.Integer, db.ForeignKey("auth.permissions.id")))
+class Base(DeclarativeBase):
+    pass
 
 
-class Permission(db.Model):
+roles_permissions = Table(
+    "roles_permissions",
+    Base.metadata,
+    Column("role_id", ForeignKey("auth.roles.id")),
+    Column("permission_id", ForeignKey("auth.permissions.id")),
+    schema="auth")
+
+users_roles = Table(
+    "users_roles",
+    Base.metadata,
+    Column("user_id", ForeignKey("auth.users.id")),
+    Column("role_id", ForeignKey("auth.roles.id")),
+    schema="auth")
+
+class Permission(Base):
     __tablename__ = "permissions"
     __table_args__ = {"schema":"auth"}
 
-    id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String(20))
-    active = db.Column(db.Boolean)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    description: Mapped[str] = mapped_column()
+    active: Mapped[bool] = mapped_column()
 
     def __repr__(self):
         return f"<Permission {self.id}>"
 
-
-class Role(db.Model):
+class Role(Base):
     __tablename__ = "roles"
     __table_args__ = {"schema":"auth"}
 
-    id = db.Column(db.Integer, primary_key=True)
-    description = db.Column(db.String(20))
-    active = db.Column(db.Boolean)
-    permissions = db.relationship("Permission", 
-        secondary=role_permission,  
-        primaryjoin=(id == role_permission.c.role_id),
-        backref="roles")
+    id: Mapped[int] = mapped_column(primary_key=True)
+    description: Mapped[str] = mapped_column()
+    active: Mapped[bool] = mapped_column()
+    permissions: Mapped[List[Permission]] = relationship(secondary=roles_permissions)  
 
     def __repr__(self):
         return f"<Role {self.id}>"
 
-
-user_role = db.Table("auth.users_roles",
-    db.Column("user_id", db.Integer, db.ForeignKey("auth.users.id")),
-    db.Column("role_id", db.Integer, db.ForeignKey("auth.roles.id")))
-
-
-class User(db.Model):
+class User(Base):
     __tablename__ = "users"
     __table_args__ = {"schema":"auth"}
 
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    username = db.Column(db.String(20))
-    password = db.Column(db.String(256))
-    active = db.Column(db.Boolean)
-    roles = db.relationship("Role", 
-        secondary=user_role,
-        primaryjoin=(id == user_role.c.user_id),
-        backref="users")
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column()
+    username: Mapped[str] = mapped_column()
+    password: Mapped[str] = mapped_column()
+    active: Mapped[bool] = mapped_column()
+    roles: Mapped[List[Role]] = relationship(secondary=users_roles)
+
 
     def __repr__(self):
         return f"<User {self.id}>"
